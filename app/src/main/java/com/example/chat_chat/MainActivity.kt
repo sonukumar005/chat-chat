@@ -31,8 +31,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ChatViewModel by viewModels()
-
-
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
             context = applicationContext,
@@ -61,6 +59,7 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(key1 = Unit) {
                                     val userData = googleAuthUiClient.getSignedInUser()
                                     if (userData != null) {
+                                        viewModel.getUserData(userData.userId)
                                         navController.navigate(chatsScreen)
                                     } else {
                                         navController.navigate(SignInScreen)
@@ -87,10 +86,12 @@ class MainActivity : ComponentActivity() {
                                     val userData = googleAuthUiClient.getSignedInUser()
                                     userData?.run{
                                         viewModel.addUserToFirestore(userData)
+                                        viewModel.getUserData(userData.userId)
                                     }
                                     if (state.value.isSignedIn) {
                                         navController.navigate(chatsScreen)
                                     }
+
                                 }
                                 SignInScreenUI(onSignInClick = {
                                     lifecycleScope.launch {
@@ -105,7 +106,7 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<chatsScreen> {
-                                ChatsScreenUI()
+                                ChatsScreenUI(viewModel, state.value)
                             }
                         }
                     }

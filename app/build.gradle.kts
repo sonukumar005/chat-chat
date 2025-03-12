@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
     kotlin("plugin.serialization") version "2.1.10"
+
 }
 
 android {
@@ -69,4 +70,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.8")
     implementation("androidx.compose.material:material-icons-extended:1.5.3")
     implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")}
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("com.google.android.gms:play-services-maps:19.1.0")
+}

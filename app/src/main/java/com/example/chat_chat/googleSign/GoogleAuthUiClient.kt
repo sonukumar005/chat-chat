@@ -32,9 +32,6 @@ class GoogleAuthUiClient(
         }
         return result?.pendingIntent?.intentSender
     }
-
-
-
     suspend fun signInWithIntent(intent: Intent): SignInResult {
         viewModel.resetState()
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
@@ -50,7 +47,6 @@ class GoogleAuthUiClient(
                         profilePictureUrl = photoUrl.toString()
                             .substring(0, photoUrl.toString().length - 6),
                         email = email.toString()
-
                     )
                 },
                 errorMessage = null
@@ -64,7 +60,6 @@ class GoogleAuthUiClient(
             )
         }
     }
-
     private fun buildSignInRequest(): BeginSignInRequest {
         return BeginSignInRequest.Builder()
             .setGoogleIdTokenRequestOptions(
@@ -75,7 +70,6 @@ class GoogleAuthUiClient(
                     .build()
             ).setAutoSelectEnabled(true).build()
     }
-
     fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
