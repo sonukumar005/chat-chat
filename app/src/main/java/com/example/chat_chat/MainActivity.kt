@@ -8,10 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -20,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.chat_chat.googleSign.GoogleAuthUiClient
+import com.example.chat_chat.screen.ChatUI
 
 import com.example.chat_chat.screen.ChatsScreenUI
 
@@ -60,6 +65,7 @@ class MainActivity : ComponentActivity() {
                                     val userData = googleAuthUiClient.getSignedInUser()
                                     if (userData != null) {
                                         viewModel.getUserData(userData.userId)
+                                        viewModel.showChats(userData.userId)
                                         navController.navigate(chatsScreen)
                                     } else {
                                         navController.navigate(SignInScreen)
@@ -87,6 +93,7 @@ class MainActivity : ComponentActivity() {
                                     userData?.run{
                                         viewModel.addUserToFirestore(userData)
                                         viewModel.getUserData(userData.userId)
+                                         viewModel.showChats(userData.userId)
                                     }
                                     if (state.value.isSignedIn) {
                                         navController.navigate(chatsScreen)
@@ -106,7 +113,43 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable<chatsScreen> {
-                                ChatsScreenUI(viewModel, state.value)
+
+                                ChatsScreenUI(viewModel,
+                                    state.value,
+                                    showSingleChat = {
+                                                     usr, id ->
+                                        viewModel.getTp(id)
+                                        viewModel.setChatUser(usr,id)
+                                        navController.navigate(ChatScreen)
+                                    }
+                                    )
+                            }
+                            composable<ChatScreen>(enterTransition = {
+                                slideInHorizontally(
+                                    initialOffsetX = { fullWidth->
+                                        fullWidth
+                                    },
+                                    animationSpec = tween(durationMillis = 300)
+                                )
+                            },
+                                exitTransition = {
+                                    slideOutHorizontally(
+                                        targetOffsetX = { fullWidth->
+                                            -fullWidth
+                                        },
+                                        animationSpec = tween(durationMillis = 300)
+                                    )
+                                }) {
+
+                                ChatUI(
+                                    viewModel = viewModel,
+                                    navController = navController,
+                                    userData = state.value.User2!!,
+                                    chatId = state.value.chatId,
+                                    state = state.value, onBack = {},
+
+                                )
+
                             }
                         }
                     }

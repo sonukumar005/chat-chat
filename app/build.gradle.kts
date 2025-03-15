@@ -72,4 +72,5 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     implementation("com.google.android.gms:play-services-maps:19.1.0")
+
 }
