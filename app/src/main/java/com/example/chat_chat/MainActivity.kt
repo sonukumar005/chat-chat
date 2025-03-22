@@ -90,10 +90,10 @@ class MainActivity : ComponentActivity() {
                                 )
                                 LaunchedEffect(key1 = state.value.isSignedIn) {
                                     val userData = googleAuthUiClient.getSignedInUser()
-                                    userData?.run{
+                                    userData?.run {
                                         viewModel.addUserToFirestore(userData)
                                         viewModel.getUserData(userData.userId)
-                                         viewModel.showChats(userData.userId)
+                                        viewModel.showChats(userData.userId)
                                     }
                                     if (state.value.isSignedIn) {
                                         navController.navigate(chatsScreen)
@@ -114,27 +114,28 @@ class MainActivity : ComponentActivity() {
                             }
                             composable<chatsScreen> {
 
-                                ChatsScreenUI(viewModel,
+                                ChatsScreenUI(
+                                    viewModel,
                                     state.value,
-                                    showSingleChat = {
-                                                     usr, id ->
+                                    showSingleChat = { usr, id ->
                                         viewModel.getTp(id)
-                                        viewModel.setChatUser(usr,id)
+                                        viewModel.setChatUser(usr, id)
                                         navController.navigate(ChatScreen)
                                     }
-                                    )
-                            }
-                            composable<ChatScreen>(enterTransition = {
-                                slideInHorizontally(
-                                    initialOffsetX = { fullWidth->
-                                        fullWidth
-                                    },
-                                    animationSpec = tween(durationMillis = 300)
                                 )
-                            },
+                            }
+                            composable<ChatScreen>(
+                                enterTransition = {
+                                    slideInHorizontally(
+                                        initialOffsetX = { fullWidth ->
+                                            fullWidth
+                                        },
+                                        animationSpec = tween(durationMillis = 300)
+                                    )
+                                },
                                 exitTransition = {
                                     slideOutHorizontally(
-                                        targetOffsetX = { fullWidth->
+                                        targetOffsetX = { fullWidth ->
                                             -fullWidth
                                         },
                                         animationSpec = tween(durationMillis = 300)
@@ -147,6 +148,7 @@ class MainActivity : ComponentActivity() {
                                     userData = state.value.User2!!,
                                     chatId = state.value.chatId,
                                     state = state.value, onBack = {},
+                                    messages = viewModel.messages
 
                                 )
 

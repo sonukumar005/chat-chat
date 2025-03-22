@@ -1,6 +1,7 @@
 package com.example.chat_chat
 
 import android.content.ContentValues
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,9 +26,11 @@ import kotlinx.coroutines.flow.update
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.Call
 import java.util.Calendar
 
 class ChatViewModel : ViewModel() {
@@ -42,7 +45,7 @@ class ChatViewModel : ViewModel() {
     var reply by mutableStateOf("")
     private val firestore = FirebaseFirestore.getInstance()
     var msgListener: ListenerRegistration? = null
-    var message by mutableStateOf<List<Message>>(listOf())
+    var messages by mutableStateOf<List<Message>>(listOf())
     fun resetState() {
     }
 
@@ -246,7 +249,7 @@ class ChatViewModel : ViewModel() {
                         MESSAGE_COLLECTION
                     ).addSnapshotListener { value, error ->
                         if (value != null) {
-                            message = value.documents.mapNotNull {
+                            messages = value.documents.mapNotNull {
                                 it.toObject(Message::class.java)
                             }.sortedBy {
                                 it.time
@@ -259,4 +262,5 @@ class ChatViewModel : ViewModel() {
 
         }
     }
+
 }
