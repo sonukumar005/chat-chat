@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -74,19 +75,21 @@ import com.example.chat_chat.R
 import com.example.chat_chat.googleSign.AppState
 import com.example.chat_chat.googleSign.ChatData
 import com.example.chat_chat.googleSign.ChatUserData
-import com.google.android.gms.maps.model.Circle
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 
 import androidx.compose.runtime.setValue
-
-
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.chat_chat.googleSign.UserData
 
 @Composable
 fun ChatsScreenUI(
-    viewModel: ChatViewModel,
+    viewModel: ChatViewModel = ChatViewModel(),
     state: AppState = AppState(),
-    showSingleChat: (ChatUserData, String) -> Unit
+    showSingleChat: (ChatUserData, String) -> Unit,
+    onSignOut: () -> Unit,
+    UserData: UserData?
 ) {
     val padding by animateDpAsState(
         targetValue = 10.dp,
@@ -110,14 +113,16 @@ fun ChatsScreenUI(
     var imgUri by remember {
         mutableStateOf<Uri?>(null)
     }
-    val launcher = rememberLauncherForActivityResult( contract = ActivityResultContracts.GetContent() ) {
-       imgUri = it
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) {
+        imgUri = it
     }
     var isUploading by remember {
         mutableStateOf(false)
     }
     BackHandler {
-       selectedItem.clear()
+        selectedItem.clear()
         imgUri = null
     }
     Scaffold(
@@ -156,13 +161,13 @@ fun ChatsScreenUI(
                 }
             )
         }
-        imgUri?.let{
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                var src = ImageDecoder.createSource(LocalContext.current.contentResolver,it)
+        imgUri?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                var src = ImageDecoder.createSource(LocalContext.current.contentResolver, it)
                 bitmap = ImageDecoder.decodeBitmap(src)
 
             }
-          
+
         }
         Column(
             modifier = Modifier.padding(top = 36.dp)
@@ -174,6 +179,19 @@ fun ChatsScreenUI(
                     modifier = Modifier.fillMaxWidth(0.98f)
                 ) {
                     Column {
+                        if(UserData?.profilePictureUrl != null) {
+                            AsyncImage(
+                                model = UserData?.profilePictureUrl ,
+                                contentDescription = "Profile picture",
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .size(50.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                            Spacer(modifier = Modifier.height(9.dp))
+                        }
+
                         Text(
                             text = "Hello, ",
                             modifier = Modifier
@@ -200,7 +218,7 @@ fun ChatsScreenUI(
                                 0.05.dp,
                                 color = Color(0xFF35567A),
                                 CircleShape
-                            )
+                             )
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable._666693_search_icon),
@@ -209,23 +227,16 @@ fun ChatsScreenUI(
                         )
 
                     }
-                    Column() {
-                        IconButton(
-                            onClick = {},
-                            modifier = Modifier
-                                .background(
-                                    colorScheme.background.copy(alpha = .2f),
-                                    CircleShape
-                                )
-                                .border(0.05.dp, Color(0xFF35567A), CircleShape)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.MoreVert,
-                                contentDescription = null,
-                                modifier = Modifier.scale(1.3f)
-                            )
-                        }
-                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = "LogOUT",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable(
+                            onClick = onSignOut
+                        )
+                    )
+
                 }
             }
             LazyColumn(
@@ -240,9 +251,7 @@ fun ChatsScreenUI(
                         0.05.dp,
                         color = Color(0xFF35567A),
                         shape = RoundedCornerShape(30.dp, 30.dp),
-
-
-                        )
+                    )
             ) {
                 item {
                     Text(

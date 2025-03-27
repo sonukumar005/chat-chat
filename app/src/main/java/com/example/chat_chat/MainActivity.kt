@@ -1,6 +1,7 @@
 package com.example.chat_chat
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val viewModel: ChatViewModel by viewModels()
-    private val googleAuthUiClient by lazy {
+    private val googleAuthUiClient by lazy { // **
         GoogleAuthUiClient(
             context = applicationContext,
             viewModel = viewModel,
@@ -96,6 +97,11 @@ class MainActivity : ComponentActivity() {
                                         viewModel.showChats(userData.userId)
                                     }
                                     if (state.value.isSignedIn) {
+                                            Toast.makeText(
+                                                applicationContext,
+                                                "Sign in successful",
+                                                Toast.LENGTH_LONG
+                                            ).show()
                                         navController.navigate(chatsScreen)
                                     }
 
@@ -112,6 +118,7 @@ class MainActivity : ComponentActivity() {
                                 }
                                 )
                             }
+
                             composable<chatsScreen> {
 
                                 ChatsScreenUI(
@@ -121,7 +128,15 @@ class MainActivity : ComponentActivity() {
                                         viewModel.getTp(id)
                                         viewModel.setChatUser(usr, id)
                                         navController.navigate(ChatScreen)
-                                    }
+                                    },
+                                    onSignOut = {
+                                        lifecycleScope.launch {
+                                            googleAuthUiClient.signOut()
+                                            viewModel.resetState()
+                                            navController.navigate(SignInScreen)
+                                        }
+                                    },
+                                    UserData = state.value.userData
                                 )
                             }
                             composable<ChatScreen>(

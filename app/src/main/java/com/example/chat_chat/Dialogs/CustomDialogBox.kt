@@ -84,7 +84,7 @@ fun CustomDialogBox(
                     TextButton(onClick = addChat){
                         Text(text = "Add",
                             style = MaterialTheme.typography.bodyLarge,
-//                            color = MaterialTheme.colorScheme.primary
+
                         )
                     }
                 }

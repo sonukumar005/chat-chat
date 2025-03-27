@@ -53,7 +53,7 @@ class ChatViewModel : ViewModel() {
         _state.update {
             it.copy(
                 isSignedIn = signInResult.data != null,
-//                userData = signInResult.data,
+
                 signInError = signInResult.errorMessage
             )
         }
