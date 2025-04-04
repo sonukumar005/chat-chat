@@ -46,6 +46,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
@@ -86,7 +87,7 @@ import com.example.chat_chat.googleSign.UserData
 @Composable
 fun ChatsScreenUI(
     viewModel: ChatViewModel = ChatViewModel(),
-    state: AppState = AppState(),
+    state: AppState,
     showSingleChat: (ChatUserData, String) -> Unit,
     onSignOut: () -> Unit,
     UserData: UserData?
@@ -139,8 +140,8 @@ fun ChatsScreenUI(
                 )
             }
         }
-    ) {
-        it
+    ) { it
+
         Image(
             painter = painterResource(id = R.drawable.blck_blurry),
             contentDescription = null,
@@ -157,7 +158,7 @@ fun ChatsScreenUI(
                     viewModel.setSrEmail("")
                 },
                 setEmail = {
-                    viewModel.setSrEmail(it)
+                    viewModel.setSrEmail(it)  //**
                 }
             )
         }
@@ -243,14 +244,9 @@ fun ChatsScreenUI(
                 modifier = Modifier
                     .padding(top = padding)
                     .fillMaxSize()
-                    .background(
-                        color = colorScheme.background.copy(alpha = .2f),
-                        shape = RoundedCornerShape(30.dp, 30.dp)
-                    )
                     .border(
                         0.05.dp,
                         color = Color(0xFF35567A),
-                        shape = RoundedCornerShape(30.dp, 30.dp),
                     )
             ) {
                 item {

@@ -38,7 +38,7 @@ class ChatViewModel : ViewModel() {
     val state = _state.asStateFlow()
     private val userCollection = Firebase.firestore.collection(USER_COLLECTION)
     var userDataListener: ListenerRegistration? = null
-    var chatListener: ListenerRegistration? = null
+    var chatListener: ListenerRegistration? = null //**
     var chats by mutableStateOf<List<ChatData>>(emptyList())
     var tp by mutableStateOf(ChatData())
     var tpListener: ListenerRegistration? = null
@@ -121,8 +121,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun addChat(email: kotlin.String) {
-
+    fun addChat(email:String) {
         Firebase.firestore.collection(CHAT_COLLECTION).where(
             Filter.or(
                 Filter.and(
@@ -140,8 +139,7 @@ class ChatViewModel : ViewModel() {
                     if (it.isEmpty) {
                         println("failed")
                     } else {
-
-                        val chatPartner = it.toObjects(UserData::class.java).firstOrNull()
+                        val chatPartner = it.toObjects(UserData::class.java).firstOrNull() //**
                         val id = Firebase.firestore.collection(CHAT_COLLECTION).document().id
                         val chat = ChatData(
                             chatId = id,
@@ -153,7 +151,7 @@ class ChatViewModel : ViewModel() {
                             user1 = ChatUserData(
                                 userId = state.value.userData?.userId.toString(),
                                 typing = false,
-                                bio = "",
+                                bio = state.value.userData?.bio.toString(),
                                 username = state.value.userData?.username.toString(),
                                 ppurl = state.value.userData?.profilePictureUrl.toString(),
                                 email = state.value.userData?.email.toString(),
@@ -184,7 +182,7 @@ class ChatViewModel : ViewModel() {
         ).addSnapshotListener { value, error ->
             if (value != null) {
                 chats = value.documents.mapNotNull {
-                    it.toObject<ChatData>()
+                     it.toObject<ChatData>()
                 }.sortedBy {
                     it.last?.time
                 }.reversed()

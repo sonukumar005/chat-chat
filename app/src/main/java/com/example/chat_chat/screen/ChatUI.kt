@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -98,7 +99,6 @@ fun ChatUI(
 
     LaunchedEffect(key1 = Unit) {
         viewModel.popMessage(state.chatId)
-
     }
     Scaffold(
         topBar = {
@@ -146,10 +146,13 @@ fun ChatUI(
                     }
                 },
                 navigationIcon = {
-                    Icon(
-                        Icons.Filled.ArrowBackIosNew,
-                        contentDescription = null
-                    )
+                    IconButton(onClick = { navController.popBackStack() }) { // Corrected line
+                        Icon(
+                            Icons.Filled.ArrowBackIosNew,
+                            contentDescription = "Go back", // Added content description
+                        )
+                    }
+
                 }
             )
         }
@@ -205,7 +208,6 @@ fun ChatUI(
                     .padding(horizontal = 16.dp)
                     .padding(top = 8.dp)
             ) {
-                Icon(imageVector = Icons.Rounded.CameraAlt, contentDescription = null)
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

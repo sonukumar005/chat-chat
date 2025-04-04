@@ -26,7 +26,7 @@ import com.example.chat_chat.googleSign.AppState
 @Composable
 fun CustomDialogBox(
     state: AppState,
-    setEmail: (String) -> Unit,
+    setEmail: (String) -> Unit,//**
     hideDialog: () -> Unit,
     addChat: () -> Unit,
 ) {
@@ -63,7 +63,7 @@ fun CustomDialogBox(
                    },
                    value = state.srEmail,
                    onValueChange = {
-                       setEmail(it)
+                       setEmail(it) //**
                    },
                     shape = RoundedCornerShape(20.dp),
                 )
